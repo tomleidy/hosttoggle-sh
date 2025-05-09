@@ -166,14 +166,14 @@ iterate_command_line_arguments() {
 }
 
 # run main script
-if [ -z "$1" ] || [ "$(validate_group $1)" = 1 ]; then
-  print_usage
-  exit
-fi
-
 if [ "$1" = "-w" ]; then
   WRITE=0
   shift
+fi
+
+if [ -z "$1" ] || [ "$(validate_group $1)" = 1 ]; then
+  print_usage
+  exit
 fi
 
 get_hosts
