@@ -109,7 +109,7 @@ delete_temporary_files() {
 
 temporary_file_to_etc_hosts() {
   if [ "$WRITE" = 0 ]; then
-    echo sudo cat "$TEMPORARY_FILENAME" # >/etc/hosts
+    sudo cat "$TEMPORARY_FILENAME" >/etc/hosts
   else
     diff -ru /etc/hosts "$TEMPORARY_FILENAME"
   fi
