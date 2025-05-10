@@ -81,29 +81,33 @@ validate_group() {
   fi
 }
 
+# generate temporary filename
 get_temporary_file_name() {
   DATE=$(date +%Y%m%d_%H%M_%S)
   FILENAME=~/.hosts_${DATE}_${RANDOM}
   echo $FILENAME
 }
 
+# output a list of words/sites separated by commas
 printf_sites() {
   echo $@ | sed -e 's/\ /,\ /g'
 }
 
+# prepare temporary files and make sure permissions are tight
 create_temporary_files() {
   cat /etc/hosts >"$TEMPORARY_FILENAME"
   touch "${TEMPORARY_FILENAME}_tmp"
   chmod 600 "$TEMPORARY_FILENAME" "${TEMPORARY_FILENAME}_tmp"
 }
 
+# remove temporary files
 delete_temporary_files() {
   if [ -f "$TEMPORARY_FILENAME" ]; then
     rm "$TEMPORARY_FILENAME" "${TEMPORARY_FILENAME}_tmp"
   fi
 }
 
-# function to update /etc/hosts based on new hosts document
+# pipe temporary file into /etc/hosts
 temporary_file_to_etc_hosts() {
   if [ -z "$(cat $TEMPORARY_FILENAME)" ]; then
     echo "\nError: something is wrong with the temporary file, not updating.\n"
@@ -122,18 +126,21 @@ temporary_file_to_etc_hosts() {
   fi
 }
 
+# prepare the sed regex patttern to comment out lines
 prepare_comment_out() {
   PATTERN_BEFORE_SITE="s/^\(127.0.0.1[[:space:]][[:alnum:]\.]*"
   PATTERN_AFTER_SITE="\)/#\1/"
   ACTION_TEXT="commenting out"
 }
 
+# prepare the sed regex pattern to uncomment lines
 prepare_uncomment() {
   PATTERN_BEFORE_SITE="s/^#\(127.0.0.1[[:space:]][[:alnum:]\.]*"
   PATTERN_AFTER_SITE="\)/\1/"
   ACTION_TEXT="uncommenting"
 }
 
+# modify temporary file based on sites in site group
 draft_new_hosts_file() {
   echo "::: $ACTION_TEXT $GROUP group ($(printf_sites $SITES))"
   IFS=" "
@@ -147,6 +154,7 @@ draft_new_hosts_file() {
 }
 
 WRITE=1 # don't attempt to write to /etc/hosts first (change to 0 if you want to be reckless; I do not.)
+
 # function to iterate comment/uncomment calls for each group specified on command line
 iterate_command_line_arguments() {
   for arg in $@; do
