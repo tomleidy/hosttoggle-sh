@@ -182,6 +182,17 @@ if [ "$1" = "-w" ]; then
   shift
 fi
 
+if [ "$(uname)" = "Darwin" ]; then
+  FILE_OWNER=$(stat -f "%u")
+  # I'm under the impression it's -c elsewhere. I'll find out another time.
+fi
+
+if [ ! -z "$FILE_OWNER" ]; then
+  if [ $FILE_OWNER -gt 0 ]; then
+    echo "\nCaution: this script is not owned by root and probably should be.\n"
+  fi
+fi
+
 if [ -z "$1" ] || [ "$(validate_group $1)" = 1 ]; then
   print_usage
   exit
