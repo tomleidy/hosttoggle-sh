@@ -1,4 +1,21 @@
 #!/bin/bash
+###############################################################################
+# In response to my propensity to impulsively open some websites without      #
+# thinking about it, I started using /etc/hosts for blocking them out. But,   #
+# sometimes, I'd like to go look at one. # It's not all focus all the time.   #
+# And commenting out / uncommenting lines gets tedious when you're looking at #
+# even this number of sites to look at. So I wanted to simplify/automate that #
+# a little bit.                                                               #
+#                                                                             #
+# This should probably be owned by root, since non-root accounts are          #
+# typically more at risk of being compromised. It would be too easy to modify #
+# this to make it do something nefarious. It's not like it's convenient to    #
+# check if this has been compromisd every time you run it.                    #
+#                                                                             #
+# Would it be unethical to to have it sudo chown root.root itself if it's     #
+# not owned by root? I am unsure.                                             #
+#                                                                             #
+###############################################################################
 
 # there's probably a way to do something like a Python dictionary.
 # I'll have to figure that out sometime in the future.
