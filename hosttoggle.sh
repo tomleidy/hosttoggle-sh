@@ -136,7 +136,6 @@ prepare_uncomment() {
 
 draft_new_hosts_file() {
   echo "::: $ACTION_TEXT $GROUP group ($(printf_sites $SITES))"
-  create_temporary_files
   IFS=" "
   for site in $SITES; do
     FULL_PATTERN="${PATTERN_BEFORE_SITE}"${site}"${PATTERN_AFTER_SITE}"
@@ -145,8 +144,6 @@ draft_new_hosts_file() {
     continue
   done
   printf "::: done $ACTION_TEXT $GROUP group\n"
-  temporary_file_to_etc_hosts
-  delete_temporary_files
 }
 
 WRITE=1 # don't attempt to write to /etc/hosts first (change to 0 if you want to be reckless; I do not.)
@@ -166,11 +163,16 @@ iterate_command_line_arguments() {
     elif [ "$STATE" = 1 ]; then
       prepare_comment_out
     fi
+    TEMPORARY_FILENAME=$(get_temporary_file_name)
+    create_temporary_files
     draft_new_hosts_file
+    temporary_file_to_etc_hosts
+    delete_temporary_files
   done
 }
 
-# run main script
+# now we're ready to run.
+
 if [ "$1" = "-w" ]; then
   WRITE=0
   shift
