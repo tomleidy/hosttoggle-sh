@@ -2,7 +2,7 @@
 ###############################################################################
 # In response to my propensity to impulsively open some websites without      #
 # thinking about it, I started using /etc/hosts for blocking them out. But,   #
-# sometimes, I'd like to go look at one. # It's not all focus all the time.   #
+# sometimes, I'd like to go look at one.  It's not all focus all the time.    #
 # And commenting out / uncommenting lines gets tedious when you're looking at #
 # even this number of sites to look at. So I wanted to simplify/automate that #
 # a little bit.                                                               #
