@@ -20,6 +20,20 @@ social=(bsky.app facebook.com instagram.com threads.net meta.com)
 x=(x.com twitter.com)
 yelp=(yelp.com)
 
+# to check if script is owned by root to avoid non-privileged shenanigans
+check_ownership() {
+  if [ "$(uname)" = "Darwin" ]; then
+    FILE_OWNER=$(stat -f "%u")
+    # I'm under the impression it's -c elsewhere. I'll find out another time.
+  fi
+
+  if [ ! -z "$FILE_OWNER" ]; then
+    if [ $FILE_OWNER -gt 0 ]; then
+      echo "\nCaution: this script is not owned by root and probably should be.\n"
+    fi
+  fi
+}
+
 get_group_array() {
   case $1 in
   bluesky)
@@ -186,21 +200,10 @@ if [ "$1" = "-w" ]; then
   shift
 fi
 
-if [ "$(uname)" = "Darwin" ]; then
-  FILE_OWNER=$(stat -f "%u")
-  # I'm under the impression it's -c elsewhere. I'll find out another time.
-fi
-
-if [ ! -z "$FILE_OWNER" ]; then
-  if [ $FILE_OWNER -gt 0 ]; then
-    echo "\nCaution: this script is not owned by root and probably should be.\n"
-  fi
-fi
-
 if [ -z "$1" ] || [ "$(validate_group $1)" = 1 ]; then
   print_usage
   exit
 fi
 
-TEMPORARY_FILENAME=$(get_temporary_file_name)
+check_ownership
 iterate_command_line_arguments $@
