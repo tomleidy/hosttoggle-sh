@@ -38,7 +38,7 @@ get_group_array() {
     echo ${news[*]}
     ;;
   social)
-    echo $((social[*]))
+    echo ${social[*]}
     ;;
   x)
     echo ${x[*]}
