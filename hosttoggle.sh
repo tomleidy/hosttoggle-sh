@@ -20,11 +20,6 @@ social=(bsky.app facebook.com instagram.com threads.net meta.com)
 x=(x.com twitter.com)
 yelp=(yelp.com)
 
-get_hosts() {
-  IFS=$'\n'
-  ETC_HOSTS="$(cat /etc/hosts)"
-}
-
 get_group_array() {
   case $1 in
   bluesky)
@@ -197,6 +192,5 @@ if [ -z "$1" ] || [ "$(validate_group $1)" = 1 ]; then
   exit
 fi
 
-get_hosts
 TEMPORARY_FILENAME=$(get_temporary_file_name)
 iterate_command_line_arguments $@
