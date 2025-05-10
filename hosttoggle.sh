@@ -57,8 +57,10 @@ get_group_state() {
   if [ -z "$SITES" ]; then
     exit
   fi
+  IFS=" "
   for site in $SITES; do
-    LINE_START="$(echo $ETC_HOSTS | grep $site | head -c 1)"
+    LINE="$(cat /etc/hosts | grep -e 127.0.0.1[[:space:]][[:alnum:]\.]*$site)"
+    LINE_START="$(echo $LINE | head -c 1)"
     if [ "$LINE_START" = "#" ]; then
       echo 2
       return
