@@ -107,7 +107,16 @@ delete_temporary_files() {
   fi
 }
 
+# function to update /etc/hosts based on new hosts document
 temporary_file_to_etc_hosts() {
+  if [ -z "$(cat $TEMPORARY_FILENAME)" ]; then
+    echo "\nError: something is wrong with the temporary file, not updating.\n"
+    return
+  fi
+  if [ -z "$(diff -ru $TEMPORARY_FILENAME /etc/hosts)" ]; then
+    echo "No changes made, not updating /etc/hosts"
+    return
+  fi
   if [ "$WRITE" = 0 ]; then
     sudo cat "$TEMPORARY_FILENAME" >/etc/hosts
   else
