@@ -133,18 +133,16 @@ prepare_uncomment() {
 }
 
 draft_new_hosts_file() {
-  echo "::: $ACTION_TEXT: $GROUP ($(printf_sites $SITES))"
+  echo "::: $ACTION_TEXT $GROUP group ($(printf_sites $SITES))"
   create_temporary_files
   IFS=" "
   for site in $SITES; do
     FULL_PATTERN="${PATTERN_BEFORE_SITE}"${site}"${PATTERN_AFTER_SITE}"
     cat "$TEMPORARY_FILENAME" | sed -e "$FULL_PATTERN" >"${TEMPORARY_FILENAME}_tmp"
     cat "${TEMPORARY_FILENAME}_tmp" >"$TEMPORARY_FILENAME"
-    grep "$TEMPORARY_FILENAME" -e $site
-    echo "::: done $site"
     continue
   done
-  printf "::: done $ACTION_TEXT $GROUP ($(printf_sites $SITES))\n\n"
+  printf "::: done $ACTION_TEXT $GROUP group\n"
   temporary_file_to_etc_hosts
   delete_temporary_files
 }
