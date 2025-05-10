@@ -46,7 +46,7 @@ check_ownership() {
 
   if [ ! -z "$FILE_OWNER" ]; then
     if [ $FILE_OWNER -gt 0 ]; then
-      echo "\nCaution: this script is not owned by root and probably should be.\n"
+      echo "\nCaution: this script should be owned by root.\n"
     fi
   fi
 }
@@ -97,7 +97,8 @@ get_group_state() {
 # output usage information
 print_usage() {
   printf "usage: $0 [-w] <site group>\n\t-w:\t use sudo and write changes "
-  printf " (default behavior is to show changes to be made)\n\tsite groups are: "
+  printf " (default behavior is to show changes to be made)\n"
+  printf "\tsite groups are: "
   for site in ${site_list[@]}; do printf "$site, "; done | sed -e 's/,\ $//'
   printf "\n\n"
   exit
@@ -126,34 +127,35 @@ printf_sites() {
 
 # prepare temporary files and make sure permissions are tight
 create_temporary_files() {
-  cat /etc/hosts >"$TEMPORARY_FILENAME"
-  touch "${TEMPORARY_FILENAME}_tmp"
-  chmod 600 "$TEMPORARY_FILENAME" "${TEMPORARY_FILENAME}_tmp"
+  cat /etc/hosts >"$TEMPFILENAME_1"
+  touch "$TEMPFILENAME_2"
+  chmod 600 "$TEMPFILENAME_1" "$TEMPFILENAME_2"
 }
 
 # remove temporary files
 delete_temporary_files() {
-  if [ -f "$TEMPORARY_FILENAME" ]; then
-    rm "$TEMPORARY_FILENAME" "${TEMPORARY_FILENAME}_tmp"
+  if [ -f "$TEMPFILENAME_1" ]; then
+    rm "$TEMPFILENAME_1" "$TEMPFILENAME_2"
   fi
 }
 
 # pipe temporary file into /etc/hosts
 temporary_file_to_etc_hosts() {
-  if [ -z "$(cat $TEMPORARY_FILENAME)" ]; then
+  if [ -z "$(cat $TEMPFILENAME_1)" ]; then
     echo "\nError: something is wrong with the temporary file, not updating.\n"
     return
   fi
-  if [ -z "$(diff -ru $TEMPORARY_FILENAME /etc/hosts)" ]; then
+  if [ -z "$(diff -ru $TEMPFILENAME_1 /etc/hosts)" ]; then
     echo "No changes made, not updating /etc/hosts"
     return
   fi
   if [ "$WRITE" = 0 ]; then
-    LINES_CHANGED="$(diff -ru $TEMPORARY_FILENAME /etc/hosts | grep -e '^+[^+]' | wc -l | awk '{print $1}')"
-    echo "::: asking for root to update /etc/hosts ($LINES_CHANGED lines changed)"
-    sudo sh -c "cat "$TEMPORARY_FILENAME" > /etc/hosts"
+    LINES_CHANGED="$(diff -ru $TEMPFILENAME_1 /etc/hosts |
+      grep -e '^+[^+]' | wc -l | awk '{print $1}')"
+    echo "::: asking for root to change $LINES_CHANGED lines of /etc/hosts"
+    sudo sh -c "cat "$TEMPFILENAME_1" > /etc/hosts"
   else
-    diff -ru /etc/hosts "$TEMPORARY_FILENAME"
+    diff -ru /etc/hosts "$TEMPFILENAME_1"
   fi
 }
 
@@ -177,8 +179,8 @@ draft_new_hosts_file() {
   IFS=" "
   for site in $SITES; do
     FULL_PATTERN="${PATTERN_BEFORE_SITE}"${site}"${PATTERN_AFTER_SITE}"
-    cat "$TEMPORARY_FILENAME" | sed -e "$FULL_PATTERN" >"${TEMPORARY_FILENAME}_tmp"
-    cat "${TEMPORARY_FILENAME}_tmp" >"$TEMPORARY_FILENAME"
+    cat "$TEMPFILENAME_1" | sed -e "$FULL_PATTERN" >"$TEMPFILENAME_2"
+    cat "$TEMPFILENAME_2" >"$TEMPFILENAME_1"
     continue
   done
   printf "::: done $ACTION_TEXT $GROUP group\n"
@@ -202,7 +204,8 @@ iterate_command_line_arguments() {
     elif [ "$STATE" = 1 ]; then
       prepare_comment_out
     fi
-    TEMPORARY_FILENAME=$(get_temporary_file_name)
+    TEMPFILENAME_1="$(get_temporary_file_name)"
+    TEMPFILENAME_2="${TEMPFILENAME_1}_tmp"
     create_temporary_files
     draft_new_hosts_file
     temporary_file_to_etc_hosts
