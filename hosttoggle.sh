@@ -4,7 +4,7 @@
 # I'll have to figure that out sometime in the future.
 # In the meantime:
 # To add/remove sites to a specific site group, add to/remove from that
-# specific site group, e.g., remove meta.com from meta
+#   specific site group, e.g., remove meta.com from meta
 
 # To add a new site group:
 # Add new site group to site_list
@@ -19,7 +19,6 @@ news=(npr.org slashdot.org soylentnews.org electoral-vote.com)
 social=(bsky.app facebook.com instagram.com threads.net meta.com)
 x=(x.com twitter.com)
 yelp=(yelp.com)
-# function to modify /etc/hosts using sed -i '' -e 's...'
 
 get_hosts() {
   IFS=$'\n'
