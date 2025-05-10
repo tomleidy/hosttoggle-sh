@@ -118,7 +118,7 @@ temporary_file_to_etc_hosts() {
     return
   fi
   if [ "$WRITE" = 0 ]; then
-    sudo cat "$TEMPORARY_FILENAME" >/etc/hosts
+    sudo sh -c "cat $TEMPORARY_FILENAME > /etc/hosts"
   else
     diff -ru /etc/hosts "$TEMPORARY_FILENAME"
   fi
