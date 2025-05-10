@@ -114,7 +114,9 @@ temporary_file_to_etc_hosts() {
     return
   fi
   if [ "$WRITE" = 0 ]; then
-    sudo sh -c "cat $TEMPORARY_FILENAME > /etc/hosts"
+    LINES_CHANGED="$(diff -ru $TEMPORARY_FILENAME /etc/hosts | grep -e '^+[^+]' | wc -l | awk '{print $1}')"
+    echo "::: asking for root to update /etc/hosts ($LINES_CHANGED lines changed)"
+    sudo sh -c "cat "$TEMPORARY_FILENAME" > /etc/hosts"
   else
     diff -ru /etc/hosts "$TEMPORARY_FILENAME"
   fi
