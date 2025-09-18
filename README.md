@@ -22,6 +22,6 @@ The absence of the -w argument will cause it to output the changes it's going to
 sh hosttoggle.sh -w social news
 ```
 
-This will either toggle or untoggle the social network and news sites configured in the script (by group). It will ask for root permissions just for applying changes. And it will alert you that it should be owned by root.
+This will either toggle or untoggle the social network and news sites configured in the script (by group). It will ask for root permissions just for applying changes. And it will alert you that it should be owned by some non-user / non-root account.
 
 Edit site arrays in the shell script to add new sites to each category. If you're adding a new category, add it to the site_list array and the case in get_group_array().
