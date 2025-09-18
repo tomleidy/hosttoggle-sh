@@ -1,21 +1,16 @@
 #!/bin/bash
-###############################################################################
-# In response to my propensity to impulsively open some websites without      #
-# thinking about it, I started using /etc/hosts for blocking them out. But,   #
-# sometimes, I'd like to go look at one.  It's not all focus all the time.    #
-# And commenting out / uncommenting lines gets tedious when you're looking at #
-# even this number of sites to look at. So I wanted to simplify/automate that #
-# a little bit.                                                               #
-#                                                                             #
-# This should probably be owned by root, since non-root accounts are          #
-# typically more at risk of being compromised. It would be too easy to modify #
-# this to make it do something nefarious. It's not like it's convenient to    #
-# check if this has been compromisd every time you run it.                    #
-#                                                                             #
-# Would it be unethical to to have it sudo chown root.root itself if it's     #
-# not owned by root? I am unsure.                                             #
-#                                                                             #
-###############################################################################
+##############################################################################
+# In response to my propensity to impulsively open some websites without
+# thinking about it, I started using /etc/hosts for blocking them out. But,
+# sometimes, I'd like to go look at one.  It's not all focus all the time.
+# And commenting out / uncommenting lines gets tedious when you're looking at
+# even this number of sites to look at. So I wanted to simplify/automate that
+# a little bit.
+#
+# This should probably be owned by a protected user (non-root) to reduce
+# risk of alteration and compromise.
+#
+##############################################################################
 
 # there's probably a way to do something like a Python dictionary.
 # I'll have to figure that out sometime in the future.
@@ -37,7 +32,7 @@ social=(bsky.app facebook.com instagram.com threads.net meta.com)
 x=(x.com twitter.com)
 yelp=(yelp.com)
 
-# to check if script is owned by root to avoid non-privileged shenanigans
+# to check if script is owned by unprotected user to avoid non-privileged shenanigans
 check_ownership() {
   if [ "$(uname)" = "Darwin" ]; then
     FILE_OWNER=$(stat -f "%u")
@@ -45,8 +40,8 @@ check_ownership() {
   fi
 
   if [ ! -z "$FILE_OWNER" ]; then
-    if [ $FILE_OWNER -gt 0 ]; then
-      echo "\nCaution: this script should be owned by root.\n"
+    if [ $FILE_OWNER -eq $(id -u) ]; then
+      echo "\nCaution: this script should be owned by a protected account.\n"
     fi
   fi
 }
