@@ -30,8 +30,10 @@ meta=(facebook.com instagram.com threads.net meta.com)
 news=(npr.org slashdot.org soylentnews.org electoral-vote.com)
 pinterest=(pinimg.com pinterest.com)
 social=(bsky.app facebook.com instagram.com threads.net meta.com)
+video=(vimeo.com youtube.com ytimg.com)
 x=(x.com twitter.com)
 yelp=(yelp.com)
+youtube=(youtube.com ytimg.com)
 
 # to check if script is owned by unprotected user to avoid non-privileged shenanigans
 check_ownership() {
@@ -64,11 +66,17 @@ get_group_array() {
   social)
     echo ${social[*]}
     ;;
+  video)
+    echo ${video[*]}
+    ;;
   x)
     echo ${x[*]}
     ;;
   yelp)
     echo ${yelp[*]}
+    ;;
+  youtube)
+    echo ${youtube[*]}
     ;;
   *)
     echo ""
