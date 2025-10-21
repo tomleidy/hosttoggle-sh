@@ -28,6 +28,7 @@ site_list=(bluesky meta news social x yelp)
 bluesky=(bsky.app)
 meta=(facebook.com instagram.com threads.net meta.com)
 news=(npr.org slashdot.org soylentnews.org electoral-vote.com)
+pinterest=(pinimg.com pinterest.com)
 social=(bsky.app facebook.com instagram.com threads.net meta.com)
 x=(x.com twitter.com)
 yelp=(yelp.com)
@@ -56,6 +57,9 @@ get_group_array() {
     ;;
   news)
     echo ${news[*]}
+    ;;
+  pinterest)
+    echo ${pinterest[*]}
     ;;
   social)
     echo ${social[*]}
